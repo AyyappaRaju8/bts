@@ -130,7 +130,7 @@ int main()
             printf("\n");
             break;
         default:
-            printf("Invalid query type");
+            printf("Invalid query typenkhkhk");
         }
     }
 }
