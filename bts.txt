@@ -1,0 +1,136 @@
+Binary Search Tree
+#include<stdio.h>
+#include<stdlib.h>
+ 
+struct Node
+{
+    int data;
+    struct node *left, *right;
+};
+ 
+struct Node *root = NULL;
+ 
+struct Node* createNode(int val)
+{
+    struct Node *newNode = (struct Node*) malloc(sizeof(struct Node));
+    newNode->data = val;
+    newNode->left = newNode->right = NULL;
+    return newNode;
+}
+ 
+void insert(struct Node *currentNode, int data)
+{
+    if(currentNode == NULL)
+    {
+        root = createNode(data);
+        return;
+    }
+    if(data < currentNode->data)
+    {
+        if(currentNode->left != NULL)
+        {
+            insert(currentNode->left, data);
+        }
+        else
+        {
+            currentNode->left = createNode(data);
+        }
+    }
+    else
+    {
+        if(currentNode->right != NULL)
+        {
+            insert(currentNode->right, data);
+        }
+        else
+        {
+            currentNode->right = createNode(data);
+        }
+    }
+}
+ 
+void preOrderTraversal(struct Node *node)
+{
+    if (node != NULL)
+    {
+        printf("%d ", node->data);
+        preOrderTraversal(node->left);
+        preOrderTraversal(node->right);
+    }
+}
+ 
+struct Node* getMinValNode(struct Node* root)
+{
+    struct Node* currentNode = root;
+    while (currentNode->left != NULL)
+    {
+        currentNode = currentNode->left;
+    }
+    return currentNode;
+}
+ 
+struct Node* deleteNode(struct Node *root, int data)
+{
+    if(root == NULL)
+    {
+        return root;
+    }
+    if(data < root->data)
+    {
+        root->left = deleteNode(root->left, data);
+    }
+    else if(data > root->data)
+    {
+        root->right = deleteNode(root->right, data);
+    }
+    else
+    {
+        if(root->left == NULL)
+        {
+            struct Node *temp = root->right;
+            free(root);
+            return temp;
+        }
+        else if(root->right == NULL)
+        {
+            struct Node *temp = root->left;
+            free(root);
+            return temp;
+        }
+        struct Node *temp = getMinValNode(root->right);
+        root->data = temp->data;
+        root->right = deleteNode(root->right, temp->data);
+    }
+    return root;
+}
+ 
+int main()
+{
+    int N, queryType, val;
+    scanf("%d", &N);
+    if(N < 3 || N > 100)
+    {
+        printf("N not in boundary");
+    }
+    for(int ctr = 1; ctr <= N; ctr++)
+    {
+        scanf("%d", &queryType);
+        switch(queryType)
+        {
+        case 1:
+            scanf("%d", &val);
+            insert(root, val);
+            break;
+        case 2:
+            scanf("%d", &val);
+            root = deleteNode(root, val);
+            break;
+        case 3:
+            preOrderTraversal(root);
+            printf("\n");
+            break;
+        default:
+            printf("Invalid query type");
+        }
+    }
+}
